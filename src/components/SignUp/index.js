@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { withFirebase } from '../Firebase';
-import { compose } from 'recompose';
+import React, {Component} from 'react';
+import {Link, withRouter} from 'react-router-dom';
+import {withFirebase} from '../Firebase';
+import {compose} from 'recompose';
+import {Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
+
 
 import * as ROUTES from '../../constants/routes';
+import {SignInLink} from "../SignIn";
 
 const SignUpPage = () => (
     <div>
-        <h1>SignUp</h1>
         <SignUpForm/>
     </div>
 );
@@ -17,22 +19,24 @@ const INITIAL_STATE = {
     email: '',
     passwordOne: '',
     passwordTwo: '',
+    firstName: "",
+    lastName: "",
     error: null,
 };
 
 class SignUpFormBase extends Component {
     constructor(props) {
         super(props);
-        this.state = { ...INITIAL_STATE };
-        this.props.history.push(ROUTES.HOME);
+        this.state = {...INITIAL_STATE};
+        // this.props.history.push(ROUTES.SIGN_UP);
     }
 
     onChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({[event.target.name]: event.target.value});
     };
 
     onSubmit = event => {
-        const { username, email, passwordOne } = this.state;
+        const {username, email, passwordOne, firstName, lastName} = this.state;
 
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -43,14 +47,16 @@ class SignUpFormBase extends Component {
                     .set({
                         username,
                         email,
+                        firstName,
+                        lastName
                     });
             })
             .then(() => {
-                this.setState({ ...INITIAL_STATE });
+                this.setState({...INITIAL_STATE});
                 this.props.history.push(ROUTES.HOME);
             })
             .catch(error => {
-                this.setState({ error });
+                this.setState({error});
             });
 
         event.preventDefault();
@@ -62,6 +68,8 @@ class SignUpFormBase extends Component {
             email,
             passwordOne,
             passwordTwo,
+            firstName,
+            lastName,
             error,
         } = this.state;
 
@@ -70,45 +78,89 @@ class SignUpFormBase extends Component {
             passwordOne !== passwordTwo ||
             passwordOne === '' ||
             email === '' ||
-            username === '';
-
+            username === '' ||
+            firstName === '' ||
+            lastName === '';
         return (
-            <form onSubmit={this.onSubmit}>
-                <input
-                    name="username"
-                    value={username}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Full Name"
-                />
-                <input
-                    name="email"
-                    value={email}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Email Address"
-                />
-                <input
-                    name="passwordOne"
-                    value={passwordOne}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Password"
-                />
-                <input
-                    name="passwordTwo"
-                    value={passwordTwo}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Confirm Password"
-                />
-                <button disabled={isInvalid} type="submit">
-                    Sign Up
-                </button>
+            <Grid textAlign='center' style={{height: '90vh'}} verticalAlign='middle'>
+                <Grid.Column style={{maxWidth: 450}}>
+                    <Header as='h2' color='teal' textAlign='center'>
+                        Sign Up
+                    </Header>
+                    <Form size='large' onSubmit={this.onSubmit}>
+                        <Segment stacked>
+                            <Form.Input
+                                fluid
+                                name="username"
+                                value={username}
+                                onChange={this.onChange}
+                                type="text"
+                                placeholder="Username"
+                            />
 
-                {error && <p>{error.message}</p>}
-            </form>
+                            <Form.Input
+                                fluid
+                                name="firstName"
+                                value={firstName}
+                                onChange={this.onChange}
+                                type="text"
+                                placeholder="First Name"
+                            />
+
+
+                            <Form.Input
+                                fluid
+                                name="lastName"
+                                value={lastName}
+                                onChange={this.onChange}
+                                type="text"
+                                placeholder="lastName"
+                            />
+
+                            <Form.Input
+                                fluid icon='mail'
+                                iconPosition='left'
+                                name="email"
+                                value={email}
+                                onChange={this.onChange}
+                                type="text"
+                                placeholder="Email Address"
+                            />
+
+                            <Form.Input
+                                fluid
+                                icon='lock'
+                                iconPosition='left'
+                                placeholder='Password'
+                                onChange={this.onChange}
+                                value={passwordOne}
+                                type='password'
+                                name='passwordOne'
+                            />
+
+                            <Form.Input
+                                fluid
+                                icon='lock'
+                                iconPosition='left'
+                                placeholder='Confirm Password'
+                                onChange={this.onChange}
+                                value={passwordTwo}
+                                type='password'
+                                name='passwordTwo'
+                            />
+                            <Button fluid size='large'  disabled={isInvalid} type="submit">
+                                Sign Up
+                            </Button>
+                            {error && <p>{error.message}</p>}
+                        </Segment>
+                    </Form>
+                    <Message>
+                        <SignInLink/>
+                    </Message>
+                </Grid.Column>
+            </Grid>
         );
+
     }
 }
 
@@ -125,4 +177,4 @@ const SignUpForm = compose(
 
 export default SignUpPage;
 
-export { SignUpForm, SignUpLink };
+export {SignUpForm, SignUpLink};

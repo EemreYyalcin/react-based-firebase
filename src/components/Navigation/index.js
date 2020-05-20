@@ -1,49 +1,76 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import * as ROUTES from '../../constants/routes';
 import SignOutButton from '../SignOut';
-import { AuthUserContext } from '../Session';
+import {AuthUserContext} from '../Session';
+import {Menu} from "semantic-ui-react";
+
 
 const Navigation = () => (
     <div>
         <AuthUserContext.Consumer>
             {authUser =>
-                authUser ? <NavigationAuth /> : <NavigationNonAuth />
+                authUser ? <NavigationAuth/> : <NavigationNonAuth/>
             }
         </AuthUserContext.Consumer>
     </div>
 );
 
 const NavigationAuth = () => (
-    <ul>
-        <li>
+    <Menu>
+        <Menu.Item header>Options</Menu.Item>
+        <Menu.Item
+            name='landing'
+            active='false'
+        >
             <Link to={ROUTES.LANDING}>Landing</Link>
-        </li>
-        <li>
+        </Menu.Item>
+        <Menu.Item
+            name='home'
+            active='false'
+        >
             <Link to={ROUTES.HOME}>Home</Link>
-        </li>
-        <li>
+        </Menu.Item>
+        <Menu.Item
+            name='account'
+            active='false'
+        >
             <Link to={ROUTES.ACCOUNT}>Account</Link>
-        </li>
-        <li>
+        </Menu.Item>
+        <Menu.Item
+            name='admin'
+            active='false'
+        >
             <Link to={ROUTES.ADMIN}>Admin</Link>
-        </li>
-        <li>
-            <SignOutButton />
-        </li>
-    </ul>
+        </Menu.Item>
+        <SignOutButton/>
+    </Menu>
 );
 
+
 const NavigationNonAuth = () => (
-    <ul>
-        <li>
+    <Menu>
+        <Menu.Item header>Options</Menu.Item>
+        <Menu.Item
+            name='landing'
+            active='false'
+        >
             <Link to={ROUTES.LANDING}>Landing</Link>
-        </li>
-        <li>
+        </Menu.Item>
+        <Menu.Item
+            name='signIn'
+            active='false'
+        >
             <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-        </li>
-    </ul>
+        </Menu.Item>
+        <Menu.Item
+            name='signUp'
+            active='false'
+        >
+            <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+        </Menu.Item>
+    </Menu>
 );
 
 
